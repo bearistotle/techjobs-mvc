@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+<body>
+    <div th:replace="fragments :: page-header"></div>
+    <div class="container body-content">
+        <h1>Search Results</h1>
+        <h4 class="text-muted" th:text="'Search Type: ' + ${searchType} + ' | Search Term: ' + ${searchTerm}"></h4>
+        <br></br>
+        <table>
+            <thead>
+                <th th:each="field : ${fields}" th:text="${field}"></th>
+            </thead>
+            <tbody>
+                <tr th:each="job : ${results}">
+                    <td th:each="field : ${fields}" th:text="${job.get(field)}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
+
