@@ -6,7 +6,7 @@
 
 <div th:replace="fragments :: page-header"></div>
 
-<div class="container body-content">
+<div th:if="${numResults} == null" class="container body-content">
 
     <h1 th:text="${#strings.capitalizeWords(title)}"></h1>
 
@@ -35,9 +35,49 @@
     </form>
 
     <hr />
+</div>
+<!-- TODO #2 - Loop over jobs map to display all job fields -->
+<div th:if="${numResults} != null" class="container body-content">
+    <form th:action="@{/search/results}">
+        <h2>Search by:</h2>
 
-    <!-- TODO #2 - Loop over jobs map to display all job fields -->
+        <p>
+        <span th:each="column : ${columns}">
+            <input
+                    type="radio"
+                    name="searchType"
+                    th:id="${column.key}"
+                    th:value="${column.key}"
+                    th:checked="${column.key == 'all'}"/>
+            <label th:for="${column.key}" th:text="${column.value}"></label>
+        </span>
 
+        </p>
+
+        <p>
+            <label for="searchTerm">Keyword:</label>
+            <input type="text" name="searchTerm" id="searchTerm" />
+        </p>
+
+        <input type="submit" value="Search" />
+    </form>
+
+    <hr />
+
+    <h2 th:text="${numResults} + ' Result(s)'"></h2>
+    <h4 class="text-muted" th:text="'Search Type: ' + ${searchType} + ' | Search Term: ' + ${searchTerm}"></h4>
+    <br></br>
+    <div class="container" th:if="${numResults}">
+        <table class="job-listing" th:each="job : ${results}">
+            <tr th:each="field : ${fields}">
+                <td th:text="${#strings.capitalizeWords(field)}"></td>
+                <td th:text="${#strings.capitalizeWords(job.get(field))}"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="container" th:if="not ${numResults}">
+        <h3 th:text="${errorMessage}"></h3>
+    </div>
 </div>
 
 </body>
