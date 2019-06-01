@@ -24,19 +24,46 @@ public class SearchController {
     }
 
     // TODO #1 - Create handler to process search request and display results
-    @RequestMapping(value = "results", method = RequestMethod.POST)
-    private String displaySearchResults(@RequestParam String searchType, @RequestParam String searchTerm, Model model){
+    @RequestMapping(value = "results", method = RequestMethod.GET)
+    private String displaySearchResults(@RequestParam("searchType") String searchType, @RequestParam("searchTerm")
+            String searchTerm, Model model){
 
-        ArrayList<HashMap<String, String>> results = JobData.findByColumnAndValue(searchType, searchTerm);
-        HashMap<String, String> job = new HashMap<>();
-        job = results.get(0);
-        ArrayList<String> fields = new ArrayList<>(job.keySet());
+        int numResults;
 
-        model.addAttribute("results", results);
+        //if search type is all
+        if (searchType.equals("all")){
+            if (JobData.findByValue(searchTerm).size() > 0){
+                ArrayList<HashMap<String, String>> results = JobData.findByValue(searchTerm);
+                HashMap<String, String> job = new HashMap<>(results.get(0));
+                ArrayList<String> fields = new ArrayList<>(job.keySet());
+                numResults = results.size();
+
+                model.addAttribute("results", results);
+                model.addAttribute("fields", fields);
+            } else {
+                numResults = 0;
+                String errorMessage = "No results found. Please try another search.";
+                model.addAttribute("errorMessage", errorMessage);
+            }
+        } else{
+            if (JobData.findByColumnAndValue(searchType, searchTerm).size() > 0) {
+                ArrayList<HashMap<String, String>> results = JobData.findByColumnAndValue(searchType, searchTerm);
+                HashMap<String, String> job = new HashMap<>(results.get(0));
+                ArrayList<String> fields = new ArrayList<>(job.keySet());
+                numResults = results.size();
+
+                model.addAttribute("results", results);
+                model.addAttribute("fields", fields);
+            } else {
+                numResults = 0;
+                String errorMessage = "No results found. Please try another search.";
+                model.addAttribute("errorMessage", errorMessage);
+            }
+        }
         model.addAttribute("title", "Search Results");
         model.addAttribute("searchType", searchType);
         model.addAttribute("searchTerm", searchTerm);
-        model.addAttribute("fields", fields);
+        model.addAttribute("numResults", numResults);
 
         return "results";
     }
