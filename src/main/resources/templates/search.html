@@ -48,7 +48,7 @@
                     name="searchType"
                     th:id="${column.key}"
                     th:value="${column.key}"
-                    th:checked="${column.key == 'all'}"/>
+                    th:checked="${column.key == searchType}"/>
             <label th:for="${column.key}" th:text="${column.value}"></label>
         </span>
 
@@ -71,10 +71,13 @@
         <table th:fragment="jobs-list" class="job-listing" th:each="job : ${results}">
             <tr th:each="field : ${fields}">
                 <td th:text="${#strings.capitalizeWords(field)}"></td>
-                <td th:text="${#strings.capitalizeWords(job.get(field))}"></td>
+                <td th:if="${field} == 'name'" th:text="${#strings.capitalizeWords(job.get(field))}"></td>
+                <td th:if="${field} != 'name'">
+                    <a th:href="@{/list/jobs(column=${field}, value=${job.get(field)})}" th:text="${#strings.capitalizeWords(job.get(field))}"></a>
+                </td>
             </tr>
         </table>
-    </div>
+</div>
     <div class="container" th:if="not ${numResults}">
         <h3 th:text="${errorMessage}"></h3>
     </div>
