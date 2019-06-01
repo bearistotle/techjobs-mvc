@@ -68,7 +68,7 @@
     <h4 class="text-muted" th:text="'Search Type: ' + ${searchType} + ' | Search Term: ' + ${searchTerm}"></h4>
     <br></br>
     <div class="container" th:if="${numResults}">
-        <table class="job-listing" th:each="job : ${results}">
+        <table th:fragment="jobs-list" class="job-listing" th:each="job : ${results}">
             <tr th:each="field : ${fields}">
                 <td th:text="${#strings.capitalizeWords(field)}"></td>
                 <td th:text="${#strings.capitalizeWords(job.get(field))}"></td>
