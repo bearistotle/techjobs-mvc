@@ -16,7 +16,7 @@ import java.util.HashMap;
 @RequestMapping(value = "list")
 public class ListController extends TechJobsController {
 
-    static ArrayList<String> fields = new ArrayList<>(JobData.findAll().get(0).keySet());
+    static Iterable<String> fields = JobData.findAll().get(0).keySet();
 
 
     @RequestMapping(value = "")
@@ -48,7 +48,7 @@ public class ListController extends TechJobsController {
     public String listJobsByColumnAndValue(Model model,
             @RequestParam String column, @RequestParam String value) {
 
-        ArrayList<HashMap<String, String>> results = JobData.findByColumnAndValue(column, value);
+        Iterable<HashMap<String, String>> results = JobData.findByColumnAndValue(column, value);
         model.addAttribute("title", "Jobs with " + columnChoices.get(column) + ": " + value);
         model.addAttribute("results", results);
         model.addAttribute("fields", fields);

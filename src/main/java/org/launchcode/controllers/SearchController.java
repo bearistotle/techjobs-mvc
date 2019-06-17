@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by LaunchCode
@@ -22,7 +23,6 @@ public class SearchController extends TechJobsController {
         return "search";
     }
 
-    // TODO #1 - Create handler to process search request and display results
     @RequestMapping(value = "results", method = RequestMethod.GET)
     private String displaySearchResults(@RequestParam("searchType") String searchType, @RequestParam("searchTerm")
             String searchTerm, Model model){
@@ -32,9 +32,9 @@ public class SearchController extends TechJobsController {
         //if search type is all
         if (searchType.equals("all")){
             if (JobData.findByValue(searchTerm).size() > 0){
-                ArrayList<HashMap<String, String>> results = JobData.findByValue(searchTerm);
+                List<HashMap<String, String>> results = JobData.findByValue(searchTerm);
                 HashMap<String, String> job = new HashMap<>(results.get(0));
-                ArrayList<String> fields = new ArrayList<>(job.keySet());
+                Iterable<String> fields = job.keySet();
                 numResults = results.size();
 
                 model.addAttribute("results", results);
@@ -46,9 +46,9 @@ public class SearchController extends TechJobsController {
             }
         } else{
             if (JobData.findByColumnAndValue(searchType, searchTerm).size() > 0) {
-                ArrayList<HashMap<String, String>> results = JobData.findByColumnAndValue(searchType, searchTerm);
+                List<HashMap<String, String>> results = JobData.findByColumnAndValue(searchType, searchTerm);
                 HashMap<String, String> job = new HashMap<>(results.get(0));
-                ArrayList<String> fields = new ArrayList<>(job.keySet());
+                Iterable<String> fields = new ArrayList<>(job.keySet());
                 numResults = results.size();
 
                 model.addAttribute("results", results);
